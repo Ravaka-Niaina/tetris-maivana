@@ -1,0 +1,46 @@
+#container {
+  width: fit-content;
+  margin: 0 auto;
+}
+
+#blocs-container {
+  border: 1px solid black;
+  padding: 2px;
+  display: grid;
+  grid-template-columns: repeat(10, 20px);
+  gap: 2px;
+}
+
+#inner-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#game-over {
+  background-color: black;
+  display: none;
+  justify-content: center;
+  position: absolute;
+  color: white;
+  padding: 5px 10px;
+}
+
+.bloc, .moving-bloc, .non-moving-bloc {
+  width: 20px;
+  height: 20px;
+  display: inline;
+}
+
+.bloc {
+  background-color: burlywood;
+}
+
+.moving-bloc {
+  background-color: black;
+}
+
+.non-moving-bloc {
+  background-color: brown;
+}
