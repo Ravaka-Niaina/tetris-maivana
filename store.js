@@ -4,5 +4,5 @@ export const store = {
     virtualBlocs: [],
     idMovingTimeInterval: undefined,
     isGameOver: false,
-    speed: 100
+    speed: 500
 };

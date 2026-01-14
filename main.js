@@ -1,13 +1,13 @@
 import { store, } from "./store.js";
 import { 
   assertGameOver,
-  insertBlocs,
   interpretRightMove, 
   interpretLeftMove, 
   interpretDownMove,
 } from "./interpretKeys.js";
 import { moveBlocs, stopBlocs, } from "./moveBlocs.js";
 import { renderBlocsContainer, } from "./rendering.js";
+import { spawnRandomTetromino, } from "./spawnTetromino.js";
 
 for (let i = 0; i < 20; i++) {
   const virtualRow = [];
@@ -43,7 +43,9 @@ function listenForInputKeys () {
   });
 }
 
-insertBlocs("l");
+window.spawnRandomTetromino = spawnRandomTetromino;
+
+spawnRandomTetromino();
 renderBlocsContainer();
 listenForInputKeys();
 startGame();

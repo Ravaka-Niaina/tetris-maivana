@@ -5,52 +5,15 @@ import {
 import { store } from "./store.js";
 import { moveBlocs, stopBlocs, } from "./moveBlocs.js";
 import { renderBlocsContainer } from "./rendering.js";
+import { spawnRandomTetromino } from "./spawnTetromino.js";
 
 function showGameOver () {
   const gameOverDiv = document.getElementById("game-over");
   gameOverDiv.style.display = "flex";
 }
 
-// fonction mampiditra blocs
-export function insertBlocs (blocName) {
-
-  if (blocName === "l") {
-    if (
-      store.virtualBlocs[0][4] === 2
-      || store.virtualBlocs[1][4] === 2
-      || store.virtualBlocs[2][4] === 2
-      || store.virtualBlocs[2][5] === 2
-    ) {
-      return false;
-    }
-
-    store.virtualBlocs[0][4] = 1;
-    store.virtualBlocs[1][4] = 1;
-    store.virtualBlocs[2][4] = 1;
-    store.virtualBlocs[2][5] = 1;
-
-    return true;
-  } else if (blocName === "inverse-l") {
-    if (
-      store.virtualBlocs[0][5] === 2
-      || store.virtualBlocs[1][5] === 2
-      || store.virtualBlocs[2][5] === 2
-      || store.virtualBlocs[2][4] === 2
-    ) {
-      return false;
-    }
-
-    store.virtualBlocs[0][5] = 1;
-    store.virtualBlocs[1][5] = 1;
-    store.virtualBlocs[2][5] = 1;
-    store.virtualBlocs[2][4] = 1;
-
-    return true;
-  }
-}
-
 export function assertGameOver () {
-  const isInsertOK = insertBlocs("inverse-l");
+  const isInsertOK = spawnRandomTetromino();
   if (!isInsertOK) {
     showGameOver();
     clearInterval(store.idMovingTimeInterval);
