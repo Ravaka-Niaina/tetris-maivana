@@ -7,6 +7,7 @@ export function rotateTetromino () {
     stick: getStickBlocs,
     capitalT: getBlocs,
     rightSnake: getBlocs,
+    leftSnake: getBlocs,
   }
   console.log(store.activeTetromino);
   const blocs = getTetrominoBlocs[store.activeTetromino]();
@@ -15,6 +16,7 @@ export function rotateTetromino () {
     stick: getStickPivot,
     capitalT: getCapitalTPivot,
     rightSnake: getRightSnakePivot,
+    leftSnake: getLeftSnakePivot,
   };
   const pivot = getPivot[store.activeTetromino]();
 
@@ -156,6 +158,43 @@ function getRightSnakePivot () {
             store.virtualBlocs[y][x] === 1
             && store.virtualBlocs[y - 1][x] === 1
             && store.virtualBlocs[y][x + 1] === 1
+          ) {
+            return [y, x];
+          }
+        } catch(err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+}
+
+// the pivot is the middle block or the 2nd block
+function getLeftSnakePivot () { 
+   if (store.tetrominoAngle === 0 || store.tetrominoAngle === 180) {
+    for (let y = 0; y < store.virtualBlocs.length; y++) {
+      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
+        try {
+          if (
+            store.virtualBlocs[y][x] === 1
+            && store.virtualBlocs[y][x - 1] === 1
+            && store.virtualBlocs[y + 1][x] === 1
+          ) {
+            return [y, x];
+          }
+        } catch(err) {
+          console.error(err);
+        }
+      }
+    }
+  } else {
+    for (let y = 0; y < store.virtualBlocs.length; y++) {
+      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
+        try {
+          if (
+            store.virtualBlocs[y][x] === 1
+            && store.virtualBlocs[y - 1][x] === 1
+            && store.virtualBlocs[y][x - 1] === 1
           ) {
             return [y, x];
           }

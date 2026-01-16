@@ -4,8 +4,8 @@ const tetrominos = [
     // "stick", 
     // "square",
     // "capitalT",
-    "rightSnake", 
-    // "leftSnake", 
+    // "rightSnake", 
+    "leftSnake", 
     // "capitalJ", 
     // "capitalL"
 ];
