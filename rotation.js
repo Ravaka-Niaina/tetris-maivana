@@ -1,16 +1,28 @@
 import { store } from "./store.js";
 
 export function rotateTetromino () {
-  const blocks = getTetrominoBlocks();
-  const pivot = getPivot();
-  const newBlocks = getTetrominoNewBlocsPositions(blocks, pivot);
+  if (store.activeTetromino === "square") return;
+
+  const getTetrominoBlocs = {
+    stick: getStickBlocs,
+    capitalT: getCapitalTBlocs,
+  }
+  const blocs = getTetrominoBlocs[store.activeTetromino]();
+
+  const getPivot = {
+    stick: getStickPivot,
+    capitalT: getCapitalTPivot,
+  };
+  const pivot = getPivot[store.activeTetromino]();
+
+  const newBlocs = getTetrominoNewBlocsPositions(blocs, pivot);
   
-  if (areBlocsInsideContainer(newBlocks)) {
-    blocks.forEach(([y, x]) => {
+  if (areBlocsInsideContainer(newBlocs)) {
+    blocs.forEach(([y, x]) => {
       store.virtualBlocs[y][x] = 0;
     });
 
-    newBlocks.forEach(([y, x]) => {
+    newBlocs.forEach(([y, x]) => {
       store.virtualBlocs[y][x] = 1;
     });
     
@@ -18,34 +30,46 @@ export function rotateTetromino () {
   }
 }
 
-function areBlocsInsideContainer (blocks) {
-  for (let i = 0; i < blocks.length; i++) {
-    const [y, x] = blocks[i];
+function areBlocsInsideContainer (blocs) {
+  for (let i = 0; i < blocs.length; i++) {
+    const [y, x] = blocs[i];
     if (y < 0 || y >= 20 || x < 0 || x >= 10) return false;
   }
   return true;
 }
 
-function getTetrominoBlocks () {
-  if (store.activeTetromino === "stick") {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        if (store.virtualBlocs[y][x] === 1) {
-          // the tetromino is vertical
-          if (store.tetrominoAngle === 90 || store.tetrominoAngle === 270
-          ) {
-            return [ [y, x], [y + 1, x], [y + 2, x], [y + 3, x] ];
-          }
-          // the tetromino is horizontal
-          return [ [y, x], [y, x + 1], [y, x + 2], [y, x + 3] ];
+function getStickBlocs () {
+  for (let y = 0; y < store.virtualBlocs.length; y++) {
+    for (let x = 0; x < store.virtualBlocs[y].length; x++) {
+      if (store.virtualBlocs[y][x] === 1) {
+        // the tetromino is vertical
+        if (store.tetrominoAngle === 90 || store.tetrominoAngle === 270
+        ) {
+          return [ [y, x], [y + 1, x], [y + 2, x], [y + 3, x] ];
         }
+        // the tetromino is horizontal
+        return [ [y, x], [y, x + 1], [y, x + 2], [y, x + 3] ];
       }
     }
   }
 }
 
-function getTetrominoNewBlocsPositions (blocks, pivot) {
-  return blocks.map(([y,x]) => {
+function getCapitalTBlocs () {
+  const blocs = [];
+  for (let y = 0; y < store.virtualBlocs.length; y++) {
+    for (let x = 0; x < store.virtualBlocs[y].length; x++) {
+      store.virtualBlocs[y][x] === 1 && blocs.push([y, x]);
+
+      if (blocs.length === 4) return blocs;
+    }
+  }
+  
+  // this return should never be called because there are 4 active blocs
+  return blocs;
+}
+
+function getTetrominoNewBlocsPositions (blocs, pivot) {
+  return blocs.map(([y,x]) => {
     const dy = y - pivot[0];
     const dx = x - pivot[1];
 
@@ -56,14 +80,52 @@ function getTetrominoNewBlocsPositions (blocks, pivot) {
   });
 }
 
-function getPivot () {
-  if (store.activeTetromino === "stick") {
-    const [y, x] = getStickFirstBloc();
-    return (store.tetrominoAngle === 90 || store.tetrominoAngle === 270)
-    ? [y + 0.5, x + 1.5]
-    : [y + 1.5, x + 0.5];
-  }
+function getStickPivot () {
+  const [y, x] = getStickFirstBloc();
+
+  return (store.tetrominoAngle === 90 || store.tetrominoAngle === 270)
+  ? [y + 0.5, x + 1.5]
+  : [y + 1.5, x + 0.5];
 }
+
+// the pivot is the middle block or the 2nd block
+function getCapitalTPivot () {
+  // the tetronimo is vertical
+
+  if ((store.tetrominoAngle === 90 || store.tetrominoAngle === 270)) {
+    for (let y = 0; y < store.virtualBlocs.length; y++) {
+      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
+        try {
+          if (
+            store.virtualBlocs[y][x] === 1 
+            && store.virtualBlocs[y - 1][x] === 1
+            && store.virtualBlocs[y + 1][x] === 1
+          ) {
+            return [y, x];
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  } else {
+    for (let y = 0; y < store.virtualBlocs.length; y++) {
+      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
+        try {
+          if (
+            store.virtualBlocs[y][x] === 1 
+            && store.virtualBlocs[y][x - 1] === 1
+            && store.virtualBlocs[y][x + 1] === 1
+          ) {
+            return [y, x];
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+  }
+} 
 
 function getStickFirstBloc () {
   let minY = Infinity;

@@ -1,9 +1,9 @@
 import { store } from "./store.js"; 
 
 const tetrominos = [
-    "stick", 
-    // "square", 
-    // "capitalT", 
+    // "stick", 
+    // "square",
+    "capitalT", 
     // "rightSnake", 
     // "leftSnake", 
     // "capitalJ", 
@@ -14,6 +14,7 @@ let splicedTetrominos = [];
 export function spawnRandomTetromino () {
     const randomTetrominoName = getRandomTetrominoName();
     const isInsertOK = insertTetromino(randomTetrominoName);
+    if (isInsertOK) store.tetrominoAngle = 0;
 
     return isInsertOK;
 }
