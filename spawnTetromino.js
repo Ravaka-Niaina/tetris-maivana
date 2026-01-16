@@ -1,15 +1,15 @@
 import { store } from "./store.js"; 
 
-const tetrimonies = [
+const tetrominos = [
     "stick", 
-    "square", 
-    "capitalT", 
-    "rightSnake", 
-    "leftSnake", 
-    "capitalJ", 
-    "capitalL"
+    // "square", 
+    // "capitalT", 
+    // "rightSnake", 
+    // "leftSnake", 
+    // "capitalJ", 
+    // "capitalL"
 ];
-let splicedTetrominoes = [];
+let splicedTetrominos = [];
 
 export function spawnRandomTetromino () {
     const randomTetrominoName = getRandomTetrominoName();
@@ -19,15 +19,14 @@ export function spawnRandomTetromino () {
 }
 
 function getRandomTetrominoName () {
-    splicedTetrominoes.length === 0 && fillsplicedTetrominoes();
-    const indexToPop = getRandomInteger(0, splicedTetrominoes.length - 1);
-    const tetrominoToReturn = splicedTetrominoes.splice(indexToPop, 1)[0];
-    // console.log(splicedTetrominoes, tetrominoToReturn);
+    splicedTetrominos.length === 0 && fillsplicedTetrominos();
+    const indexToPop = getRandomInteger(0, splicedTetrominos.length - 1);
+    const tetrominoToReturn = splicedTetrominos.splice(indexToPop, 1)[0];
     return tetrominoToReturn;
 }
 
-function fillsplicedTetrominoes () {
-    splicedTetrominoes = JSON.parse(JSON.stringify(tetrimonies));
+function fillsplicedTetrominos () {
+    splicedTetrominos = JSON.parse(JSON.stringify(tetrominos));
 }
 
 // min and max both included
@@ -52,44 +51,47 @@ export function insertTetromino (blocName) {
 
 function insertStick () {
     const positions = [[0, 3], [0, 4], [0, 5], [0, 6]];
-    return verifyAndInsert(positions);
+    return verifyAndInsert(positions, "stick");
 }
 
 function insertSquare () {
     const positions = [[0, 4], [0, 5], [1, 4], [1, 5]];
-    return verifyAndInsert(positions);
+    return verifyAndInsert(positions, "square");
 }
 
 function insertCapitalT () {
     const positions = [[0, 4], [1, 3], [1, 4], [1, 5]];
-    return verifyAndInsert(positions);
+    return verifyAndInsert(positions, "capitalT");
 }
 
 function insertRightSnake () {
     const positions = [[0, 5], [0, 4], [1, 4], [1, 3]];
-    return verifyAndInsert(positions);
+    return verifyAndInsert(positions, "rightSneak");
 }
 
 function insertLeftSnake () {
     const positions = [[0, 3], [0, 4], [1, 4], [1, 5]];
-    return verifyAndInsert(positions);
+    return verifyAndInsert(positions, "leftSnake");
 }
 
 function insertCapitalJ () {
     const positions = [[0, 3], [1, 3], [1, 4], [1, 5]];
-    return verifyAndInsert(positions);
+    return verifyAndInsert(positions, "capitalJ");
 }
 
 function insertCapitalL () {
     const positions = [[0, 5], [1, 3], [1, 4], [1, 5]];
-    return verifyAndInsert(positions);
+    return verifyAndInsert(positions, "capitalL");
 }
 
 // return boolean isInsertOK
-function verifyAndInsert (positions) {
-    if (positions.some(position  => store.virtualBlocs[position[0]][position[1]] === 2)) return false;
+function verifyAndInsert (positions, activeTetromino) {
+    if (positions.some(position  => store.virtualBlocs[position[0]][position[1]] === 2)) {
+        store.activeTetromino = null;
+        return false;
+    } 
 
     positions.forEach(positions => store.virtualBlocs[positions[0]][positions[1]] = 1);
-
+    store.activeTetromino = activeTetromino;
     return true;
 }

@@ -4,6 +4,7 @@ import {
   interpretRightMove, 
   interpretLeftMove, 
   interpretDownMove,
+  interpretUpButton,
 } from "./interpretKeys.js";
 import { moveBlocs, stopBlocs, } from "./moveBlocs.js";
 import { renderBlocsContainer, } from "./rendering.js";
@@ -37,6 +38,7 @@ function listenForInputKeys () {
       ArrowRight: interpretRightMove,
       ArrowLeft: interpretLeftMove,
       ArrowDown: interpretDownMove,
+      ArrowUp: interpretUpButton,
     };
     possibleMoves[event.key]();
     renderBlocsContainer();

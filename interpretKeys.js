@@ -6,6 +6,7 @@ import { store } from "./store.js";
 import { moveBlocs, stopBlocs, } from "./moveBlocs.js";
 import { renderBlocsContainer } from "./rendering.js";
 import { spawnRandomTetromino } from "./spawnTetromino.js";
+import { rotateTetromino } from "./rotation.js";
 
 function showGameOver () {
   const gameOverDiv = document.getElementById("game-over");
@@ -79,8 +80,6 @@ export function interpretLeftMove () {
   }
 }
 
-
-
 export function interpretDownMove () {
   if (store.isGameOver === true) return;
   
@@ -100,4 +99,8 @@ export function interpretDownMove () {
     }, store.speed);
     
   } 
+}
+
+export function interpretUpButton () {
+  rotateTetromino();
 }
