@@ -3,8 +3,8 @@ import { store } from "./store.js";
 const tetrominos = [
     // "stick", 
     // "square",
-    "capitalT", 
-    // "rightSnake", 
+    // "capitalT",
+    "rightSnake", 
     // "leftSnake", 
     // "capitalJ", 
     // "capitalL"
@@ -67,7 +67,7 @@ function insertCapitalT () {
 
 function insertRightSnake () {
     const positions = [[0, 5], [0, 4], [1, 4], [1, 3]];
-    return verifyAndInsert(positions, "rightSneak");
+    return verifyAndInsert(positions, "rightSnake");
 }
 
 function insertLeftSnake () {
