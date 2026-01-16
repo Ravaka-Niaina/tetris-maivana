@@ -3,25 +3,77 @@ import { store } from "./store.js";
 export function rotateTetromino () {
   if (store.activeTetromino === "square") return;
 
-  const getTetrominoBlocs = {
-    stick: getStickBlocs,
-    capitalT: getBlocs,
-    rightSnake: getBlocs,
-    leftSnake: getBlocs,
-    capitalJ: getBlocs,
-    capitalL: getBlocs,
-  }
-  const blocs = getTetrominoBlocs[store.activeTetromino]();
+  const blocs = getBlocs();
 
-  const getPivot = {
-    stick: getStickPivot,
-    capitalT: getCapitalTPivot,
-    rightSnake: getRightSnakePivot,
-    leftSnake: getLeftSnakePivot,
-    capitalJ: getCapitalJPivot,
-    capitalL: getCapitalLPivot,
-  };
-  const pivot = getPivot[store.activeTetromino]();
+  let pivot = null;
+  if (store.activeTetromino === "stick") {
+    pivot = getStickPivot();
+  } else {
+    const possibleCases = {
+      capitalT: [
+        {
+          angles: [90, 270],
+          twoNearestBlocs: [ [-1, 0], [1, 0] ],
+        }, {
+          angles: [0, 180],
+          twoNearestBlocs: [ [0, -1], [0, 1] ],
+        }
+      ], 
+      
+      rightSnake: [
+        {
+          angles: [0, 180],
+          twoNearestBlocs: [ [0, 1], [1, 0] ],
+        }, {
+          angles: [90, 270],
+          twoNearestBlocs: [ [-1, 0], [0, 1] ],
+        }
+      ],
+
+      leftSnake: [
+        {
+          angles: [0, 180],
+          twoNearestBlocs: [ [0, -1], [1, 0] ],
+        }, {
+          angles: [90, 270],
+          twoNearestBlocs: [ [-1, 0], [0, -1] ],
+        }
+      ],
+
+      capitalJ: [
+        {
+          angles: [0],
+          twoNearestBlocs: [ [-1, 0], [0, 1] ],
+        }, {
+          angles: [90],
+          twoNearestBlocs: [ [-1, 0], [0, -1] ],
+        }, {
+          angles: [180],
+          twoNearestBlocs: [ [0, -1], [1, 0] ],
+        }, {
+          angles: [270],
+          twoNearestBlocs: [ [0, 1], [1, 0] ],
+        }
+      ],
+
+      capitalL: [
+        {
+          angles: [0],
+          twoNearestBlocs: [ [-1, 0], [0, -1] ],
+        }, {
+          angles: [90],
+          twoNearestBlocs: [ [0, -1], [1, 0] ],
+        }, {
+          angles: [180],
+          twoNearestBlocs: [ [1, 0], [0, 1] ],
+        }, {
+          angles: [270],
+          twoNearestBlocs: [ [-1, 0], [0, 1]],
+        }
+      ],
+    };
+    pivot = getPivotGeneralized(possibleCases[store.activeTetromino]);
+  }
 
   const newBlocs = getTetrominoNewBlocsPositions(blocs, pivot);
   
@@ -44,22 +96,6 @@ function areBlocsInsideContainer (blocs) {
     if (y < 0 || y >= 20 || x < 0 || x >= 10) return false;
   }
   return true;
-}
-
-function getStickBlocs () {
-  for (let y = 0; y < store.virtualBlocs.length; y++) {
-    for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-      if (store.virtualBlocs[y][x] === 1) {
-        // the tetromino is vertical
-        if (store.tetrominoAngle === 90 || store.tetrominoAngle === 270
-        ) {
-          return [ [y, x], [y + 1, x], [y + 2, x], [y + 3, x] ];
-        }
-        // the tetromino is horizontal
-        return [ [y, x], [y, x + 1], [y, x + 2], [y, x + 3] ];
-      }
-    }
-  }
 }
 
 function getBlocs () {
@@ -96,249 +132,32 @@ function getStickPivot () {
   : [y + 1.5, x + 0.5];
 }
 
-// the pivot is the middle block or the 2nd block
-function getCapitalTPivot () {
-  if ((store.tetrominoAngle === 90 || store.tetrominoAngle === 270)) {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1 
-            && store.virtualBlocs[y - 1][x] === 1
-            && store.virtualBlocs[y + 1][x] === 1
-          ) {
-            return [y, x];
-          }
-        } catch (err) {
-          console.error(err);
-        }
+function getPivotGeneralized (possibleCases) {
+  for (let i = 0; i < possibleCases.length; i++) {
+    const { angles, twoNearestBlocs, } = possibleCases[i];
+    
+    let isTheRightAngle = false;
+    for (let u = 0; u < angles.length; u++) {
+      if (store.tetrominoAngle === angles[u]) {
+        isTheRightAngle = true;
+        break;
       }
     }
-  } else {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1 
-            && store.virtualBlocs[y][x - 1] === 1
-            && store.virtualBlocs[y][x + 1] === 1
-          ) {
-            return [y, x];
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    }
-  }
-} 
 
-// the pivot is the middle block or the 2nd block
-function getRightSnakePivot () {
-  if (store.tetrominoAngle === 0 || store.tetrominoAngle === 180) {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y][x + 1] === 1
-            && store.virtualBlocs[y + 1][x] === 1
-          ) {
-            return [y, x];
+    if (isTheRightAngle) {
+      for (let y = 0; y < store.virtualBlocs.length; y++) {
+        for (let x = 0; x < store.virtualBlocs[y].length; x++) {
+          try {
+            if (
+              store.virtualBlocs[y][x] === 1
+              && store.virtualBlocs[y + twoNearestBlocs[0][0]][x + twoNearestBlocs[0][1]] === 1
+              && store.virtualBlocs[y + twoNearestBlocs[1][0]][x + twoNearestBlocs[1][1]] === 1
+            ) {
+              return [y, x];
+            }
+          } catch (err) {
+            console.error(err);
           }
-        } catch(err) {
-          console.error(err);
-        }
-      }
-    }
-  } else {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y - 1][x] === 1
-            && store.virtualBlocs[y][x + 1] === 1
-          ) {
-            return [y, x];
-          }
-        } catch(err) {
-          console.error(err);
-        }
-      }
-    }
-  }
-}
-
-// the pivot is the middle block or the 2nd block
-function getLeftSnakePivot () { 
-   if (store.tetrominoAngle === 0 || store.tetrominoAngle === 180) {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y][x - 1] === 1
-            && store.virtualBlocs[y + 1][x] === 1
-          ) {
-            return [y, x];
-          }
-        } catch(err) {
-          console.error(err);
-        }
-      }
-    }
-  } else {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y - 1][x] === 1
-            && store.virtualBlocs[y][x - 1] === 1
-          ) {
-            return [y, x];
-          }
-        } catch(err) {
-          console.error(err);
-        }
-      }
-    }
-  }
-}
-
-// the pivot is the middle block or the 2nd block
-function getCapitalLPivot () {
-  if (store.tetrominoAngle === 0) {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y - 1][x] === 1
-            && store.virtualBlocs[y][x - 1] === 1
-          ) {
-            return [y, x];
-          }
-        } catch(err) {
-          console.error(err);
-        }
-      }
-    }
-  } else if (store.tetrominoAngle === 90) {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y][x - 1] === 1
-            && store.virtualBlocs[y + 1][x] === 1
-          ) {
-            return [y, x];
-          }
-        } catch(err) {
-          console.error(err);
-        }
-      }
-    }
-  } else if (store.tetrominoAngle === 180) {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y + 1][x] === 1
-            && store.virtualBlocs[y][x + 1] === 1
-          ) {
-            return [y, x];
-          }
-        } catch(err) {
-          console.error(err);
-        }
-      }
-    }
-  } else if (store.tetrominoAngle === 270) {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y - 1][x] === 1
-            && store.virtualBlocs[y][x + 1] === 1
-          ) {
-            return [y, x];
-          }
-        } catch(err) {
-          console.error(err);
-        }
-      }
-    }
-  }
-}
-
-// the pivot is the middle block or the 2nd block
-function getCapitalJPivot () {
-  if (store.tetrominoAngle === 0) {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y - 1][x] === 1
-            && store.virtualBlocs[y][x + 1] === 1
-          ) {
-            return [y, x];
-          }
-        } catch(err) {
-          console.error(err);
-        }
-      }
-    }
-  } else if (store.tetrominoAngle === 90) {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y - 1][x] === 1
-            && store.virtualBlocs[y][x - 1] === 1
-          ) {
-            return [y, x];
-          }
-        } catch(err) {
-          console.error(err);
-        }
-      }
-    }
-  } else if (store.tetrominoAngle === 180) {
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y][x - 1] === 1
-            && store.virtualBlocs[y + 1][x] === 1
-          ) {
-            return [y, x];
-          }
-        } catch(err) {
-          console.error(err);
-        }
-      }
-    }
-  } else { // angle is 270
-    for (let y = 0; y < store.virtualBlocs.length; y++) {
-      for (let x = 0; x < store.virtualBlocs[y].length; x++) {
-        try {
-          if (
-            store.virtualBlocs[y][x] === 1
-            && store.virtualBlocs[y][x + 1] === 1
-            && store.virtualBlocs[y + 1][x] === 1
-          ) {
-            return [y, x];
-          }
-        } catch(err) {
-          console.error(err);
         }
       }
     }

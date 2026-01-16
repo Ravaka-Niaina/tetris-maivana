@@ -1,12 +1,12 @@
 import { store } from "./store.js"; 
 
 const tetrominos = [
-    // "stick", 
-    // "square",
-    // "capitalT",
-    // "rightSnake", 
-    // "leftSnake",
-    // "capitalJ", 
+    "stick", 
+    "square",
+    "capitalT",
+    "rightSnake",
+    "leftSnake",
+    "capitalJ", 
     "capitalL"
 ];
 let splicedTetrominos = [];
