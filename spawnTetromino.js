@@ -6,8 +6,8 @@ const tetrominos = [
     // "capitalT",
     // "rightSnake", 
     // "leftSnake",
-    "capitalJ", 
-    // "capitalL"
+    // "capitalJ", 
+    "capitalL"
 ];
 let splicedTetrominos = [];
 
