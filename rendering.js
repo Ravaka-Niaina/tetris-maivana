@@ -2,7 +2,7 @@
 import { store, } from "./store.js";
 import { getLowestPossiblePosition, } from "./lowestPossiblePosition.js";
 
-const colors = {
+export const colors = {
   stick: "cyan",
   square: "yellow",
   capitalT: "purple",
@@ -42,10 +42,15 @@ export function renderBlocsContainer () {
 }
 
 document.addEventListener("saveColor", (event) => {
-  console.log(event);
   const { detail: { tetrominoName, concernedBlocs } } = event;
   concernedBlocs.forEach(([y, x]) => {
     store.virtualBlocsColor[y][x] = colors[tetrominoName];
   });
   renderBlocsContainer();
+});
+
+document.addEventListener("updateScore", (event) => {
+  const { detail: { score, } } = event;
+  const spanScore = document.getElementById("score");
+  spanScore.innerHTML = score;
 });

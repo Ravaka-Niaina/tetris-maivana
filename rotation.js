@@ -98,7 +98,7 @@ function areBlocsInsideContainer (blocs) {
   return true;
 }
 
-function getBlocs () {
+export function getBlocs () {
   const blocs = [];
   for (let y = 0; y < store.virtualBlocs.length; y++) {
     for (let x = 0; x < store.virtualBlocs[y].length; x++) {

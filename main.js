@@ -9,6 +9,7 @@ import {
 import { moveBlocs, stopBlocs, } from "./moveBlocs.js";
 import { renderBlocsContainer, } from "./rendering.js";
 import { spawnRandomTetromino, } from "./spawnTetromino.js";
+import { dispatchUpdateScore } from "./score.js";
 
 for (let i = 0; i < 20; i++) {
   const virtualRow = [];
@@ -48,9 +49,9 @@ function listenForInputKeys () {
   });
 }
 
-window.spawnRandomTetromino = spawnRandomTetromino;
-
 spawnRandomTetromino();
 renderBlocsContainer();
 listenForInputKeys();
 startGame();
+
+window.store = store;

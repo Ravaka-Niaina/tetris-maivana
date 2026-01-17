@@ -1,4 +1,5 @@
 import { store } from "./store.js"; 
+import { removeFullRow } from "./score.js";
 
 const tetrominos = [
     "stick", 
@@ -12,6 +13,7 @@ const tetrominos = [
 let splicedTetrominos = [];
 
 export function spawnRandomTetromino () {
+    removeFullRow();
     const randomTetrominoName = getRandomTetrominoName();
     const isInsertOK = insertTetromino(randomTetrominoName);
     if (isInsertOK) store.tetrominoAngle = 0;

@@ -7,5 +7,6 @@ export const store = {
     activeTetromino: null,
     tetrominoAngle: null,
     isGameOver: false,
-    speed: 500
+    speed: 1000,
+    score: 0,
 };
