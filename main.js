@@ -12,10 +12,13 @@ import { spawnRandomTetromino, } from "./spawnTetromino.js";
 
 for (let i = 0; i < 20; i++) {
   const virtualRow = [];
+  const virtualRowColors = [];
   for (let u = 0; u < 10; u++) {
     virtualRow.push(0);
+    virtualRowColors.push("bloc");
   }
   store.virtualBlocs.push(virtualRow);
+  store.virtualBlocsColor.push(virtualRowColors);
 }
 
 function startGame () {

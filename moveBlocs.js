@@ -30,14 +30,29 @@ export function moveBlocs (onMoveNotAllowed, virtualBlocs) {
   return true;
 }
 
+export function dispatchSaveColor (concernedBlocs) {
+  const saveColor = {
+    tetrominoName: store.activeTetromino,
+    concernedBlocs,
+  };
+
+  const saveColorsEvent = new CustomEvent("saveColor", { detail: saveColor});
+  document.dispatchEvent(saveColorsEvent)
+}
+
 export function stopBlocs () {
-  store.virtualBlocs.forEach(virtualRow => {
+  const concernedBlocs = [];
+  
+  store.virtualBlocs.forEach((virtualRow, indexRow) => {
     for (let i = 0; i < virtualRow.length; i++) {
       if (virtualRow[i] === 1 || virtualRow[i] === 3) {
         virtualRow[i] = 2;
+        concernedBlocs.push([indexRow, i]);
       }
     }
   });
+
+  dispatchSaveColor(concernedBlocs);
 
   return false;
 }

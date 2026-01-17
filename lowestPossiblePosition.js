@@ -1,5 +1,5 @@
 import { store } from "./store.js";
-import { moveBlocs } from "./moveBlocs.js";
+import { dispatchSaveColor, moveBlocs } from "./moveBlocs.js";
 
 function hasMovingBloc(grid) {
   return grid.some(row => row.some(cell => cell === 1));
@@ -22,6 +22,8 @@ export function getLowestPossiblePosition () {
 }
 
 export function applyLowestPossiblePosition (backupVirtualBlocs) {
+  const concernedBlocs = [];
+
   for (let i = 0; i < backupVirtualBlocs.length; i++) {
     for (let u = 0; u < backupVirtualBlocs[i].length; u++) {
       if (store.virtualBlocs[i][u] === 1) {
@@ -29,9 +31,12 @@ export function applyLowestPossiblePosition (backupVirtualBlocs) {
       }
       if (backupVirtualBlocs[i][u] === 3) {
         store.virtualBlocs[i][u] = 2;
+        concernedBlocs.push([i, u]);
       }
     }
   }
+
+  dispatchSaveColor(concernedBlocs);
 }
 
 function getBackupOfLastMove (backupVirtualBlocs) {
