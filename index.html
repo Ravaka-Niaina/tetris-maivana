@@ -1,17 +1,28 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <div id="container">
-            <h3>Tetris with js</h3>
-            <h4>Score: <span id="score"></span></h4>
-            <div id="inner-container">
-                <div id="blocs-container"></div>
-                <div id="game-over"><h4>Game over!</h4></div>
-            </div>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tetris with JS</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main id="container">
+      <h3>Tetris with JS</h3>
+
+      <div id="hud">
+        <div>Score: <span id="score">0</span></div>
+        <div>Level: <span id="level">0</span></div>
+      </div>
+
+      <div id="inner-container">
+        <div id="blocs-container"></div>
+
+        <div id="game-over">
+          <h4>Game Over</h4>
         </div>
-        <script type="module" src="main.js"></script>
-    </body>
+      </div>
+    </main>
+
+    <script type="module" src="main.js"></script>
+  </body>
 </html>

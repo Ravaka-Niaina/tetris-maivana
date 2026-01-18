@@ -50,7 +50,11 @@ document.addEventListener("saveColor", (event) => {
 });
 
 document.addEventListener("updateScore", (event) => {
-  const { detail: { score, } } = event;
+  const { detail: { score, level } } = event;
+  
   const spanScore = document.getElementById("score");
   spanScore.innerHTML = score;
+  
+  const spanLevel = document.getElementById("level");
+  spanLevel.innerHTML = level;
 });

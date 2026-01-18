@@ -7,6 +7,9 @@ export const store = {
     activeTetromino: null,
     tetrominoAngle: null,
     isGameOver: false,
-    speed: 1000,
+    defaultSpeed: 500,
+    speed: 500,
+    increaseSpeedBy: 100,
     score: 0,
+    numberOfLinesCleared: 0,
 };

@@ -12,7 +12,11 @@ export function dispatchUpdateScore (missingRowsNumber) {
     };
     const newScore = store.score + score[missingRowsNumber];
     store.score = newScore;
-    const event = new CustomEvent("updateScore", { detail: { score: newScore } });
+    store.numberOfLinesCleared = store.numberOfLinesCleared + missingRowsNumber;
+    store.speed = store.defaultSpeed - (store.numberOfLinesCleared * store.increaseSpeedBy) / 10;
+    const level = 1 + Math.floor(store.numberOfLinesCleared / 10);
+    
+    const event = new CustomEvent("updateScore", { detail: { score: newScore, level, } });
     document.dispatchEvent(event);
 }
 

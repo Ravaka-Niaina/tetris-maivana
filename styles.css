@@ -1,40 +1,70 @@
+:root {
+  --cell-size: 20px;
+  --gap-size: 2px;
+  --board-bg: #1a1a1a;;
+}
+
+/* Layout */
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f5f5f5;
+}
+
 #container {
-  width: fit-content;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
 }
 
-#blocs-container {
-  border: 1px solid black;
-  padding: 2px;
-  display: grid;
-  grid-template-columns: repeat(10, 20px);
-  gap: 2px;
+/* HUD */
+#hud {
+  display: flex;
+  gap: 20px;
+  font-weight: bold;
 }
 
+/* Game area */
 #inner-container {
   position: relative;
-  display: flex;
+}
+
+/* Board */
+#blocs-container {
+  display: grid;
+  grid-template-columns: repeat(10, var(--cell-size));
+  gap: var(--gap-size);
+  padding: var(--gap-size);
+  border: 2px solid #000;
+  background: #222;
+}
+
+/* Overlay */
+#game-over {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  display: none;
   align-items: center;
   justify-content: center;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+  z-index: 10;
 }
 
-#game-over {
-  background-color: black;
-  display: none;
-  justify-content: center;
-  position: absolute;
-  color: white;
-  padding: 5px 10px;
-}
-
-.bloc, .moving-bloc, .non-moving-bloc {
-  width: 20px;
-  height: 20px;
-  display: inline;
+/* Blocks */
+.bloc,
+.moving-bloc,
+.non-moving-bloc {
+  width: var(--cell-size);
+  height: var(--cell-size);
 }
 
 .bloc {
-  background-color: burlywood;
+  background-color: var(--board-bg);
 }
 
 .moving-bloc {
@@ -47,33 +77,33 @@
 
 .lowest-possible-position {
   background-color: white;
-
 }
 
+/* Tetromino colors */
 .cyan {
-  background-color: cyan;
+  background: linear-gradient(135deg, #00e5ff, #0097a7);
 }
 
 .yellow {
-  background-color: yellow;
+  background: linear-gradient(135deg, #fff176, #fbc02d);
 }
 
 .purple {
-  background-color: purple;
+  background: linear-gradient(135deg, #ce93d8, #8e24aa);
 }
 
 .green {
-  background-color: green;
+  background: linear-gradient(135deg, #69f0ae, #2e7d32);
 }
 
 .red {
-  background-color: red;
+  background: linear-gradient(135deg, #ff5252, #c62828);
 }
 
 .blue {
-  background-color: blue;
+  background: linear-gradient(135deg, #82b1ff, #1565c0);
 }
 
 .orange {
-  background-color: orange;
+  background: linear-gradient(135deg, #ffb74d, #ef6c00);
 }
